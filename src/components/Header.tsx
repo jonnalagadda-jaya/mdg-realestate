@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Sun, Moon, Settings } from 'lucide-react';
+import { Menu, X, Sun, Moon, Home, Users, Briefcase, Phone } from 'lucide-react';
 
 interface HeaderProps {
   activePage: string;
@@ -30,10 +30,10 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const navLinks = [
-    { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About Us' },
-    { id: 'services', label: 'Services' },
-    { id: 'contact', label: 'Contact Us' },
+    { id: 'home', label: 'Home', icon: <Home size={18} /> },
+    { id: 'about', label: 'About Us', icon: <Users size={18} /> },
+    { id: 'services', label: 'Services', icon: <Briefcase size={18} /> },
+    { id: 'contact', label: 'Contact Us', icon: <Phone size={18} /> },
   ];
 
   const handleNavClick = (pageId: string) => {
@@ -74,14 +74,6 @@ export const Header: React.FC<HeaderProps> = ({
             {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
           </button>
 
-          <button
-            className={`icon-btn admin-btn ${activePage === 'admin' ? 'active' : ''}`}
-            onClick={() => handleNavClick('admin')}
-            title="Admin Dashboard"
-            aria-label="Admin panel"
-          >
-            <Settings size={20} />
-          </button>
 
           <button
             className="cta-button desktop-cta"
@@ -110,16 +102,11 @@ export const Header: React.FC<HeaderProps> = ({
               className={`mobile-nav-link ${activePage === link.id ? 'active' : ''}`}
               onClick={() => handleNavClick(link.id)}
             >
+              <span style={{ marginRight: '8px', display: 'inline-flex', alignItems: 'center' }}>{link.icon}</span>
               {link.label}
             </button>
           ))}
-          <button
-            className={`mobile-nav-link admin-nav-link ${activePage === 'admin' ? 'active' : ''}`}
-            onClick={() => handleNavClick('admin')}
-          >
-            <Settings size={18} style={{ marginRight: '8px' }} />
-            Admin Panel
-          </button>
+
           <button
             className="cta-button mobile-cta"
             onClick={() => handleNavClick('contact')}

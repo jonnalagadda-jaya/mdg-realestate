@@ -21,6 +21,11 @@ export interface SiteContent {
   aboutText: string;
   visionText: string;
   missionText: string;
+  emailJsServiceId: string;
+  emailJsPublicKey: string;
+  emailJsTemplateId: string;
+  companyEmail: string;
+  companyWebsite: string;
 }
 
 export interface ServiceDetail {

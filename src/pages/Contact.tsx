@@ -88,23 +88,31 @@ export const Contact: React.FC<ContactProps> = ({ siteContent, onAddLead, select
               </div>
 
               {/* Map embed */}
-              <div className="contact-map-wrapper glass-card">
-                <iframe
-                  title="Google Maps Location for Mango Digital Growth"
-                  src={siteContent.googleMapEmbed}
-                  width="100%"
-                  height="300"
-                  style={{ border: 0, borderRadius: '8px' }}
-                  allowFullScreen={false}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
+              <div className="contact-map-wrapper glass-card" style={{ padding: 0, overflow: 'hidden' }}>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=4-73%2F6%2C+RNR+Nagar%2C+Haripuram+Colony%2C+Peruru%2C+Tirupati%2C+Andhra+Pradesh+-+517505"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: 'block', position: 'relative', cursor: 'pointer', width: '100%', height: '100%' }}
+                >
+                  <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 5 }}></div>
+                  <iframe
+                    title="Google Maps Location for Mango Digital Growth"
+                    src={siteContent.googleMapEmbed}
+                    width="100%"
+                    height="300"
+                    style={{ border: 0, borderRadius: '8px', pointerEvents: 'none', display: 'block' }}
+                    allowFullScreen={false}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </a>
               </div>
             </div>
 
             {/* Right Column: Contact Form */}
             <div className="contact-form-panel">
-              <ContactForm onAddLead={onAddLead} defaultService={selectedService} />
+              <ContactForm onAddLead={onAddLead} siteContent={siteContent} defaultService={selectedService} />
             </div>
           </div>
         </div>

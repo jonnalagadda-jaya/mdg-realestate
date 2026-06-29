@@ -8,10 +8,15 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
   googleMapEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3876.843653198083!2d79.3789422756857!3d13.636836986743126!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3cd13fd07119ffef%3A0xbd8607fa668e1a8e!2sPerur%2C%20Tirupati%2C%20Andhra%20Pradesh%20517505!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin',
   heroHeading: 'Grow Your Business with Digital Marketing That Delivers Results',
   heroSubheading: 'We help businesses increase online visibility, generate quality leads, improve search rankings, and grow revenue through strategic digital marketing solutions.',
-  videoUrl: 'https://www.youtube.com/embed/zghTsz5mFpw',
+  videoUrl: '/videoInsight.mp4',
   aboutText: 'Mango Digital Growth is a results-driven digital marketing company helping businesses build a strong online presence. We specialize in SEO, Google Ads, Social Media Marketing, Website Development, and Local Business Promotion. Our goal is to help businesses reach the right audience, generate quality leads, and achieve measurable growth through innovative digital marketing strategies.',
   visionText: 'To be the most trusted growth partner for businesses globally, driving digital transformation and enabling sustainable revenue generation.',
   missionText: 'To empower businesses of all sizes with highly targeted, affordable, and result-oriented digital marketing strategies that turn online visibility into long-term commercial success.',
+  emailJsServiceId: 'service_da90y1f', // Configured user service ID
+  emailJsPublicKey: 'jgH-WK7Q3_5LHQQ11', // Configured user public key
+  emailJsTemplateId: 'template_duw9vib', // Configured user template ID
+  companyEmail: 'mangodigitalgrowth@gmail.com',
+  companyWebsite: 'www.mangodigitalgrowth.com',
 };
 
 export const SERVICES_DATA: ServiceDetail[] = [

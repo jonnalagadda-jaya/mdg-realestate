@@ -61,8 +61,11 @@ export const Home: React.FC<HomeProps> = ({ siteContent, setActivePage, onAddLea
           playsInline
         ></video>
         <div className="hero-bg-overlay"></div>
-        
-        <div className="hero-content centered-hero-content">
+      </section>
+
+      {/* Hero Text Content - Below Video */}
+      <section className="hero-text-section">
+        <div className="hero-text-container">
           <span className="badge">Digital Growth Accelerator</span>
           <h1 className="hero-title">{siteContent.heroHeading}</h1>
           <p className="hero-subtitle">{siteContent.heroSubheading}</p>
@@ -106,22 +109,16 @@ export const Home: React.FC<HomeProps> = ({ siteContent, setActivePage, onAddLea
           </p>
           <div className="video-player-container glass-card">
             <div className="video-aspect-ratio">
-              {siteContent.videoUrl.endsWith('.mp4') || siteContent.videoUrl.includes('/video.mp4') ? (
-                <video
-                  src={siteContent.videoUrl}
-                  controls
-                  className="hero-video-player"
-                  style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, border: 'none' }}
-                ></video>
-              ) : (
-                <iframe
-                  title="Mango Digital Growth Introduction Video"
-                  src={siteContent.videoUrl}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                ></iframe>
-              )}
+              <video
+                src="/videoInsight.mp4"
+                controls
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="hero-video-player"
+                style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, border: 'none' }}
+              ></video>
             </div>
           </div>
         </div>
@@ -263,7 +260,7 @@ export const Home: React.FC<HomeProps> = ({ siteContent, setActivePage, onAddLea
               </div>
             </div>
             <div className="home-contact-form-wrapper">
-              <ContactForm onAddLead={onAddLead} />
+              <ContactForm onAddLead={onAddLead} siteContent={siteContent} />
             </div>
           </div>
         </div>

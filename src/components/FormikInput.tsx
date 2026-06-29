@@ -9,6 +9,7 @@ interface FormikInputProps {
   as?: 'input' | 'textarea' | 'select';
   rows?: number;
   disabled?: boolean;
+  required?: boolean;
   children?: React.ReactNode;
 }
 
@@ -20,6 +21,7 @@ export const FormikInput: React.FC<FormikInputProps> = ({
   as = 'input',
   rows,
   disabled,
+  required,
   children,
 }) => {
   const [field, meta] = useField(name);
@@ -27,7 +29,7 @@ export const FormikInput: React.FC<FormikInputProps> = ({
 
   return (
     <div className="form-group">
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name}>{label}{required && <span style={{ color: '#ef4444', marginLeft: '2px' }}>*</span>}</label>
       {as === 'textarea' ? (
         <textarea
           {...field}

@@ -3,10 +3,11 @@ import { Formik, Form } from 'formik';
 import { Send, CheckCircle2 } from 'lucide-react';
 import { FormikInput } from './FormikInput';
 import { FormikPhoneInput } from './FormikPhoneInput';
-import type { Lead } from '../types';
+import type { Lead, SiteContent } from '../types';
 
 interface ContactFormProps {
   onAddLead: (lead: Omit<Lead, 'id' | 'date' | 'status'>) => void;
+  siteContent: SiteContent;
   defaultService?: string;
 }
 
@@ -15,10 +16,11 @@ interface FormValues {
   mobileNumber: string;
   emailAddress: string;
   serviceRequired: string;
+  customService?: string;
   message: string;
 }
 
-export const ContactForm: React.FC<ContactFormProps> = ({ onAddLead, defaultService = '' }) => {
+export const ContactForm: React.FC<ContactFormProps> = ({ onAddLead, siteContent, defaultService = '' }) => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const initialValues: FormValues = {
@@ -26,6 +28,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onAddLead, defaultServ
     mobileNumber: '',
     emailAddress: '',
     serviceRequired: defaultService,
+    customService: '',
     message: '',
   };
 
@@ -37,6 +40,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onAddLead, defaultServ
     { value: 'local-seo', label: 'Local SEO & Maps' },
     { value: 'ai-marketing', label: 'AI Marketing Solutions' },
     { value: 'content-marketing', label: 'Content Marketing' },
+    { value: 'other', label: 'Other (Please specify)' },
   ];
 
   const validate = (values: FormValues) => {
@@ -54,20 +58,14 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onAddLead, defaultServ
       errors.mobileNumber = 'Please enter a valid mobile number';
     }
 
-    if (!values.emailAddress.trim()) {
-      errors.emailAddress = 'Email Address is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.emailAddress)) {
+    if (values.emailAddress.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.emailAddress)) {
       errors.emailAddress = 'Please enter a valid email address';
     }
 
     if (!values.serviceRequired) {
       errors.serviceRequired = 'Please select a service';
-    }
-
-    if (!values.message.trim()) {
-      errors.message = 'Message is required';
-    } else if (values.message.trim().length < 10) {
-      errors.message = 'Message must be at least 10 characters long';
+    } else if (values.serviceRequired === 'other' && (!values.customService || !values.customService.trim())) {
+      errors.customService = 'Please specify the service';
     }
 
     return errors;
@@ -92,30 +90,85 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onAddLead, defaultServ
         <Formik
           initialValues={initialValues}
           validate={validate}
-          onSubmit={(values, { setSubmitting, resetForm }) => {
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
+            // Dispatch real email using EmailJS REST API
+            const serviceId = siteContent.emailJsServiceId || "service_da90y1f";
+            const templateId = siteContent.emailJsTemplateId || "template_duw9vib";
+            const publicKey = siteContent.emailJsPublicKey || "jgH-WK7Q3_5LHQQ11";
+
+            const selectedServiceLabel = values.serviceRequired === 'other'
+              ? `Other: ${values.customService || ''}`
+              : (servicesList.find((s) => s.value === values.serviceRequired)?.label || values.serviceRequired);
+
+            const emailJsPayload = {
+              service_id: serviceId,
+              template_id: templateId,
+              user_id: publicKey,
+              template_params: {
+                to_email: "jonnalagaddajayasree5@gmail.com",
+                fullName: values.fullName,
+                email: values.emailAddress,
+                phone: values.mobileNumber,
+                companyName: siteContent.companyName,
+                message: values.message || 'No custom message provided.',
+                serviceRequired: selectedServiceLabel,
+                companyEmail: siteContent.companyEmail || "mangodigitalgrowth@gmail.com",
+                companyWebsite: siteContent.companyWebsite || "www.mangodigitalgrowth.com"
+              }
+            };
+
+            console.log("Sending EmailJS payload:", JSON.stringify(emailJsPayload, null, 2));
+
+            try {
+              const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify(emailJsPayload)
+              });
+
+              if (res.ok) {
+                console.log("EmailJS dispatch success!");
+              } else {
+                const errorText = await res.text();
+                console.error(`EmailJS error ${res.status}: ${errorText}`);
+                alert(`Email sending failed: ${errorText}. Please try again or contact us directly.`);
+              }
+            } catch (err) {
+              console.error("EmailJS dispatch error:", err);
+              alert("Email sending failed due to a network error. Please try again or contact us directly.");
+            }
+
+            const leadValues = {
+              fullName: values.fullName,
+              mobileNumber: values.mobileNumber,
+              emailAddress: values.emailAddress,
+              serviceRequired: values.serviceRequired === 'other' ? (values.customService || 'Other') : values.serviceRequired,
+              message: values.message
+            };
+
+            onAddLead(leadValues);
+            setSubmitting(false);
+            setSubmitSuccess(true);
+            resetForm();
+
             setTimeout(() => {
-              onAddLead(values);
-              setSubmitting(false);
-              setSubmitSuccess(true);
-              resetForm();
-              
-              setTimeout(() => {
-                setSubmitSuccess(false);
-              }, 5000);
-            }, 1200);
+              setSubmitSuccess(false);
+            }, 5000);
           }}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, values }) => (
             <Form className="enquiry-form">
               <h3 className="form-heading">Send an Enquiry</h3>
               <p className="form-subheading">Get custom quotes and grow your business today.</p>
 
-              {/* Full Name */}
               <FormikInput
                 label="Full Name"
                 name="fullName"
                 placeholder="e.g. Ramesh Naidu"
                 disabled={isSubmitting}
+                required
               />
 
               {/* Mobile Number & Email Address (Row) */}
@@ -125,6 +178,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onAddLead, defaultServ
                     label="Mobile Number"
                     name="mobileNumber"
                     disabled={isSubmitting}
+                    required
                   />
                 </div>
 
@@ -139,12 +193,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onAddLead, defaultServ
                 </div>
               </div>
 
-              {/* Service Required */}
               <FormikInput
                 label="Service Required"
                 name="serviceRequired"
                 as="select"
                 disabled={isSubmitting}
+                required
               >
                 <option value="">Select a Digital Marketing Service</option>
                 {servicesList.map((service) => (
@@ -153,6 +207,16 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onAddLead, defaultServ
                   </option>
                 ))}
               </FormikInput>
+
+              {values.serviceRequired === 'other' && (
+                <FormikInput
+                  label="Please Specify Service"
+                  name="customService"
+                  placeholder="Type the service you need..."
+                  disabled={isSubmitting}
+                  required
+                />
+              )}
 
               {/* Message */}
               <FormikInput
