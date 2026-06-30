@@ -105,7 +105,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onAddLead, siteContent
               template_id: templateId,
               user_id: publicKey,
               template_params: {
-                to_email: "jonnalagaddajayasree5@gmail.com",
+                to_email: "mangodigitalgrowth@gmail.com",
                 fullName: values.fullName,
                 email: values.emailAddress,
                 phone: values.mobileNumber,
